@@ -1,0 +1,13 @@
+{
+  "name": "fala-clara",
+  "version": "1.0.0",
+  "description": "Faz o Claude conversar com linguagem natural, respostas curtas e completas, exemplos da sua vida real, honestidade quando não sabe e postura de coach. Fica ativa sozinha em toda sessão.",
+  "author": {
+    "name": "carlos-dataengineer",
+    "url": "https://github.com/carlos-dataengineer"
+  },
+  "homepage": "https://github.com/carlos-dataengineer/fala-clara",
+  "repository": "https://github.com/carlos-dataengineer/fala-clara",
+  "license": "MIT",
+  "keywords": ["comunicacao", "linguagem-simples", "coach", "pt-br", "skill", "plain-language"]
+}

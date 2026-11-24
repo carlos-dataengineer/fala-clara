@@ -1,0 +1,17 @@
+name: Sugestão
+description: Uma ideia para deixar o Fala Clara melhor
+labels: ["melhoria"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Qual situação isso resolve?
+      description: Conte um caso real (com dados fictícios).
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: O que você sugere
+    validations:
+      required: true

@@ -1,0 +1,16 @@
+{
+  "description": "Liga o Fala Clara no começo de cada sessão, sem precisar chamar a skill.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat \"${CLAUDE_PLUGIN_ROOT}/ativacao/sempre-ativo.md\""
+          }
+        ]
+      }
+    ]
+  }
+}

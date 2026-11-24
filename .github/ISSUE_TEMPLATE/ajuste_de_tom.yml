@@ -1,0 +1,39 @@
+name: Ajuste de tom
+description: A resposta do Claude não saiu clara, curta, honesta ou com cara de coach
+labels: ["tom"]
+body:
+  - type: markdown
+    attributes:
+      value: "Não cole dados pessoais, da empresa ou segredos. Troque nomes por fictícios."
+  - type: textarea
+    id: pergunta
+    attributes:
+      label: O que você perguntou
+    validations:
+      required: true
+  - type: textarea
+    id: resposta
+    attributes:
+      label: O que o Claude respondeu
+    validations:
+      required: true
+  - type: dropdown
+    id: combinado
+    attributes:
+      label: Qual combinado falhou?
+      multiple: true
+      options:
+        - Não falou como gente (jargão, tique de IA)
+        - Longo demais ou incompleto
+        - Faltou exemplo da vida real
+        - Inventou em vez de dizer que não sabia
+        - Não fez pergunta ou fez perguntas demais
+        - Atrapalhou um pedido direto (código, comando)
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Como você esperava que fosse
+  - type: input
+    id: ambiente
+    attributes:
+      label: Onde (Claude Code, app, site, Codex) e modelo

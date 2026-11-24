@@ -1,0 +1,25 @@
+name: Erro
+description: Algo na instalação, desinstalação ou no plugin não funcionou
+labels: ["bug"]
+body:
+  - type: textarea
+    id: oque
+    attributes:
+      label: O que aconteceu
+      description: Cole a mensagem de erro, se houver.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Como reproduzir
+      placeholder: "1. Rodei ...\n2. Apareceu ..."
+    validations:
+      required: true
+  - type: input
+    id: ambiente
+    attributes:
+      label: Sistema e ferramenta
+      placeholder: "Windows 11, PowerShell 5.1, Claude Code 2.x"
+    validations:
+      required: true

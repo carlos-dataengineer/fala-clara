@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Validar repositório
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Skill, plugin, instaladores e README
+        run: python tests/validate_repo.py
+      - name: Sintaxe dos scripts bash
+        run: bash -n install.sh && bash -n uninstall.sh
+      - name: ShellCheck
+        run: shellcheck --severity=warning install.sh uninstall.sh
+      - name: Gancho do plugin imprime a ativação
+        run: CLAUDE_PLUGIN_ROOT="$PWD" bash -c "$(python -c 'import json;print(json.load(open("hooks/hooks.json"))["hooks"]["SessionStart"][0]["hooks"][0]["command"])')" | grep -q "Fala Clara"
+
+  instalar-unix:
+    name: Instalação (${{ matrix.os }})
+    needs: validar
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      FALA_CLARA_HOME: ${{ github.workspace }}/../home-teste
+    steps:
+      - uses: actions/checkout@v4
+      - name: CLAUDE.md já existente com conteúdo do usuário
+        run: |
+          mkdir -p "$FALA_CLARA_HOME/.claude"
+          printf '# Minhas regras\n\nSou professora.\n' > "$FALA_CLARA_HOME/.claude/CLAUDE.md"
+      - name: Instalar duas vezes (idempotente)
+        run: bash install.sh && bash install.sh
+      - name: Conferir
+        run: |
+          H="$FALA_CLARA_HOME"
+          test -f "$H/.claude/skills/fala-clara/SKILL.md"
+          test -f "$H/.codex/skills/fala-clara/SKILL.md"
+          test -f "$H/.agents/skills/fala-clara/SKILL.md"
+          test "$(grep -c 'fala-clara:inicio' "$H/.claude/CLAUDE.md")" = 1
+          grep -q 'Sou professora' "$H/.claude/CLAUDE.md"
+          grep -q 'fala-clara:fim' "$H/.codex/AGENTS.md"
+          test -f "$H/.claude/CLAUDE.md.antes-fala-clara.bak"
+      - name: Desinstalar
+        run: |
+          bash uninstall.sh
+          H="$FALA_CLARA_HOME"
+          test ! -e "$H/.claude/skills/fala-clara"
+          ! grep -q 'fala-clara' "$H/.claude/CLAUDE.md"
+          grep -q 'Sou professora' "$H/.claude/CLAUDE.md"
+          test ! -e "$H/.codex/AGENTS.md"
+
+  instalar-windows:
+    name: Instalação (Windows)
+    needs: validar
+    runs-on: windows-latest
+    env:
+      FALA_CLARA_HOME: ${{ github.workspace }}\..\home-teste
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar duas vezes com Windows PowerShell 5.1
+        shell: powershell
+        run: |
+          New-Item -ItemType Directory -Force "$env:FALA_CLARA_HOME\.claude" | Out-Null
+          Set-Content -Path "$env:FALA_CLARA_HOME\.claude\CLAUDE.md" -Value "# Minhas regras`n`nSou professora." -Encoding ascii
+          .\install.ps1
+          .\install.ps1
+      - name: Conferir e desinstalar
+        shell: powershell
+        run: |
+          $H = $env:FALA_CLARA_HOME
+          if (-not (Test-Path "$H\.claude\skills\fala-clara\SKILL.md")) { throw 'skill nao instalada' }
+          $c = Get-Content "$H\.claude\CLAUDE.md" -Raw -Encoding UTF8
+          if (([regex]::Matches($c, 'fala-clara:inicio')).Count -ne 1) { throw 'bloco duplicado ou ausente' }
+          if ($c -notmatch 'Sou professora') { throw 'conteudo do usuario perdido' }
+          .\uninstall.ps1
+          $c = Get-Content "$H\.claude\CLAUDE.md" -Raw -Encoding UTF8
+          if ($c -match 'fala-clara') { throw 'bloco nao removido' }
+          if ($c -notmatch 'Sou professora') { throw 'conteudo do usuario perdido na remocao' }
+          if (Test-Path "$H\.claude\skills\fala-clara") { throw 'skill nao removida' }

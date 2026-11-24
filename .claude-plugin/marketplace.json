@@ -1,0 +1,20 @@
+{
+  "name": "fala-clara",
+  "owner": {
+    "name": "carlos-dataengineer",
+    "url": "https://github.com/carlos-dataengineer"
+  },
+  "metadata": {
+    "description": "Fala Clara: comunicação clara, humana e com postura de coach para o Claude.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "fala-clara",
+      "source": "./",
+      "description": "Linguagem natural, respostas curtas e completas, exemplos da vida real, honestidade e postura de coach. Ativa sozinha em toda sessão.",
+      "version": "1.0.0",
+      "category": "productivity"
+    }
+  ]
+}
