@@ -10,7 +10,7 @@ CODEX_DIR="${CODEX_HOME:-$HOME_DIR/.codex}"
 
 remove_skill() {
   local target="$1"
-  if [ -f "$target/SKILL.md" ] && grep -Eq "^name:[[:space:]]*$NAME[[:space:]]*$" "$target/SKILL.md"; then
+  if [ -f "$target/SKILL.md" ] && grep -Eq "^name:[[:space:]]*${NAME}[[:space:]]*$" "$target/SKILL.md"; then
     rm -rf "$target"
     printf '  ok Removido %s\n' "$target"
   fi

@@ -68,7 +68,7 @@ BLOCK_SRC="$ROOT/ativacao/sempre-ativo.md"
 install_skill() {
   local target="$1" label="$2"
   if [ -e "$target" ]; then
-    if [ -f "$target/SKILL.md" ] && grep -Eq "^name:[[:space:]]*$NAME[[:space:]]*$" "$target/SKILL.md"; then
+    if [ -f "$target/SKILL.md" ] && grep -Eq "^name:[[:space:]]*${NAME}[[:space:]]*$" "$target/SKILL.md"; then
       rm -rf "$target"
     else
       warn "$target já existe e não parece ser o Fala Clara. Pulei $label para não apagar nada."
